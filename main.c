@@ -8,6 +8,8 @@
 
 #ifdef OPT
 #define OUT_FILE "opt.txt"
+#elif defined(OPT_HASH)
+#define OUT_FILE "hash.txt"
 #else
 #define OUT_FILE "orig.txt"
 #endif
@@ -42,26 +44,35 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+#ifdef OPT_HASH
+    tableEntry *hashTable=initializeTable();
+#endif
     /* build the entry */
+
     entry *pHead, *e;
     pHead = (entry *) malloc(sizeof(entry));
     printf("size of entry : %lu bytes\n", sizeof(entry));
     e = pHead;
     e->pNext = NULL;
 
+
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
 
     clock_gettime(CLOCK_REALTIME, &start);
+
     while (fgets(line, sizeof(line), fp)) {
         while (line[i] != '\0')
             i++;
         line[i - 1] = '\0';
         i = 0;
+#ifdef OPT_HASH
+        append(line,hashTable);
+#else
         e = append(line, e);
+#endif
     }
-
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time1 = diff_in_second(start, end);
 
@@ -74,15 +85,26 @@ int main(int argc, char *argv[])
     char input[MAX_LAST_NAME_SIZE] = "zyxel";
     e = pHead;
 
+#ifdef OPT_HASH
+    assert(findName(input, hashTable) &&
+           "Did you implement findName() in " IMPL "?");
+    assert(0 == strcmp(findName(input, hashTable)->lastName, "zyxel"));
+#else
     assert(findName(input, e) &&
            "Did you implement findName() in " IMPL "?");
     assert(0 == strcmp(findName(input, e)->lastName, "zyxel"));
+#endif
+
 #if defined(__GNUC__)
     __builtin___clear_cache((char *) pHead, (char *) pHead + sizeof(entry));
 #endif
     /* compute the execution time */
     clock_gettime(CLOCK_REALTIME, &start);
+#ifdef OPT_HASH
+    findName(input,hashTable);
+#else
     findName(input, e);
+#endif
     clock_gettime(CLOCK_REALTIME, &end);
     cpu_time2 = diff_in_second(start, end);
 
