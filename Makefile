@@ -56,4 +56,4 @@ calculate: calculate.c
 .PHONY: clean
 clean:
 	$(RM) $(EXEC) *.o perf.* \
-	      	calculate orig.txt opt.txt output.txt runtime.png hash.txt
+	      	calculate orig.txt opt.txt output.txt runtime.png hash.txt phonebook_opt_hash
