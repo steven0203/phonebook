@@ -1,9 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 #include "phonebook_opt_hash.h"
-
-
 
 entry *findName(char lastName[],tableEntry *hashTable)
 {
