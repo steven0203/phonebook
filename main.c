@@ -118,5 +118,8 @@ int main(int argc, char *argv[])
     if (pHead->pNext) free(pHead->pNext);
     free(pHead);
 
+#ifdef OPT_HASH
+    free(hashTable);
+#endif
     return 0;
 }
